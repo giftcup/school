@@ -168,6 +168,9 @@ void display(Queue* Q, int* head, int* end)
     *head = temp;
 }
 
+/* size_of_queue: Takes a pointer to the head and end of a queue
+**                and returns the size of the queue.
+*/
 int size_of_queue(int *head, int* end)
 {
     return *end - *head + 1;
