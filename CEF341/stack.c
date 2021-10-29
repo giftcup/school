@@ -160,7 +160,7 @@ void display(Stack* P, int* top)
     if (stack_is_empty(top))
     {
         printf("Stack is empty!\n");
-        exit(EXIT_FAILURE);
+        return;
     }
 
     while (!stack_is_empty(top))
