@@ -14,6 +14,8 @@ void display(Stack* P, int* top);
 int size_of_stack(Stack* P, int* top);
 int top_of_stack(Stack* P, int* top);
 
+int max_size = 0;
+
 int main(void)
 {
     Stack *P;
@@ -85,12 +87,10 @@ void greeting(void)
 */
 void create(Stack* P)
 {
-    int size;
-
     printf("\nEnter size of stack: ");
-    scanf("%d", &size);
+    scanf("%d", &max_size);
 
-    P = (int *) malloc (sizeof(int) * size);
+    P = (int *) malloc (sizeof(int) * max_size);
 }
 
 /* instruction: Displays the operations that can be performed
@@ -125,7 +125,7 @@ bool stack_is_empty(int *top)
 */
 void push(Stack* P, int *top, int num)
 {
-    if  (*top == SIZE)
+    if  (*top == max_size)
     {
         printf("Stack is full!\n");
         return;
