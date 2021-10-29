@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define SIZE 5
 typedef int Stack;
 
 void greeting(void);
@@ -175,7 +174,7 @@ void display(Stack* P, int* top)
 
 
 /* top_of_stack: Displays the element at the top of stack
-                 without removing it then returns.
+**               without removing it then returns.
 */
 int top_of_stack(Stack* P, int* top)
 {
