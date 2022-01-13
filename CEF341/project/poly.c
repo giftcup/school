@@ -137,3 +137,48 @@ void display_poly(struct Poly_Node *P){
 int degree_Poly(struct Poly_Node *P) {
     return P->degree;
 }
+
+void add_Poly(struct Poly_Node **R, struct Poly_Node *P, struct Poly_Node *Q){
+	
+	while(R->next && P->next){
+		if(R->degree > P->degree){
+			Q->degree = R->degree;
+			Q->coefficient = R->coefficient;
+			R = R->next;
+		}
+		
+		else if(P->degree > R->degree){
+			Q->degree = P->degree;
+			Q->coefficient = P->coefficient;
+			P = P->next;
+		}
+		
+		else{
+			Q->degree = R->degree;
+			Q->coefficient = R->coefficient + P->coefficient;
+			R = R->next;
+			P = P->next;
+		}
+		
+//		Q->next = (struct Poly_Node*) malloc(sizeof(struct Poly_Node));
+//		Q = Q->next;
+//		Q->next = NULL;
+
+		create_node(&Q);
+	}
+	
+	while(R->next || P->next){
+		if(R->next){
+			Q->degree = R->degree;
+			Q->coefficient = R->coefficient;
+			R = R->next;
+		}
+		if(P->next){
+			Q->degree = P->degree;
+			Q->coefficient = P->coefficient;
+			P = P->next;
+		}
+		
+		create_node(&Q);
+	}
+}
