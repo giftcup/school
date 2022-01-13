@@ -9,6 +9,7 @@ struct Poly_Node {
 };
 
 void create_node(struct Poly_Node **P);
+void make_poly(struct Poly_Node **P);
 void create_poly(struct Poly_Node **);
 void display_poly(struct Poly_Node *);
 int degree_Poly(struct Poly_Node *P);
@@ -16,23 +17,29 @@ void add_Poly(struct Poly_Node **R, struct Poly_Node *P, struct Poly_Node *Q);
 
 
 int main(void){
-  struct Poly_Node *P, *tracker;
-  P = NULL;
-  char condition;
-  int degree;
+    struct Poly_Node *P, *Q, *R;
+    P = Q = R = NULL;
+    char make_polynomial;
+    int degree;
 
-    printf("Add node to polynomial (y | n)?: ");
-    scanf("%c", &condition);
+    make_poly(&P);
 
-    while(condition == 'y' || condition == 'Y'){
-        create_poly(&P);
-        printf("Add node to polynomial (y | n)?: ");
-        scanf(" %c", &condition);
+    printf("Make another polynomial (y|n): ");
+    scanf("%c", &make_polynomial);
+    fflush(stdin);
+    if (make_polynomial == 'y' || make_polynomial == 'Y') {
+        make_poly(&Q);
     }
 
     display_poly(P);
-//   degree = degree_Poly(poly1);
-//   printf("The polynomial is of degree %d\n", degree);
+    degree = degree_Poly(P);
+    printf("The polynomial is of degree %d\n", degree);
+
+    if (Q != NULL) {
+        display_poly(Q);
+        degree = degree_Poly(Q);
+        printf("The polynomial is of degree %d\n", degree);
+    }
 
     free(P);
     return 0;
@@ -43,6 +50,26 @@ void create_node(struct Poly_Node **P) {
     if (*P == NULL) printf("Memory allocation failed in create_node");
 }
 
+void make_poly(struct Poly_Node **P) {
+    char condition;
+    printf("Add node to polynomial (y | n)?: ");
+    scanf("%c", &condition);
+    fflush(stdin);
+
+    while(condition == 'y' || condition == 'Y'){
+        create_poly(P);
+        printf("Add node to polynomial (y | n)?: ");
+        scanf(" %c", &condition);
+        fflush(stdin);
+    }
+}
+
+/**
+ * @brief creates a term of a polynomial by getting the
+ * degree and coefficient and storing in a structure
+ * @param P pointer to a pointer of type struct Poly_Node;
+ * @return void
+**/ 
 void create_poly(struct Poly_Node **P){
     struct Poly_Node *newNode, *cur, *prev;
     create_node(&newNode);
@@ -108,13 +135,5 @@ void display_poly(struct Poly_Node *P){
 }
 
 int degree_Poly(struct Poly_Node *P) {
-    int degree = P->degree;
-    P = P->next;
-
-    while (P != NULL) {
-        if (P->degree > degree) 
-            degree = P->degree;
-        P = P->next;
-    }
-    return degree;
+    return P->degree;
 }
