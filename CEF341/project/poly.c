@@ -13,7 +13,9 @@ void make_poly(struct Poly_Node **P);
 void create_poly(struct Poly_Node **);
 void display_poly(struct Poly_Node *);
 int degree_Poly(struct Poly_Node *P);
+void add_to_poly(struct Poly_Node **P, struct Poly_Node *new_node);
 void add_Poly(struct Poly_Node **R, struct Poly_Node *P, struct Poly_Node *Q);
+void add_to_end(struct Poly_Node **tracker, struct Poly_Node *newNode);
 
 
 int main(void){
@@ -24,7 +26,7 @@ int main(void){
 
     make_poly(&P);
 
-    printf("Make another polynomial (y|n): ");
+    printf("\n\nMake another polynomial (y | n): ");
     scanf("%c", &make_polynomial);
     fflush(stdin);
     if (make_polynomial == 'y' || make_polynomial == 'Y') {
@@ -39,9 +41,11 @@ int main(void){
         display_poly(Q);
         degree = degree_Poly(Q);
         printf("The polynomial is of degree %d\n", degree);
+        add_Poly(&R, P, Q);
+        display_poly(R);
+        degree = degree_Poly(R);
     }
 
-    free(P);
     return 0;
 }
 
@@ -52,38 +56,21 @@ void create_node(struct Poly_Node **P) {
 
 void make_poly(struct Poly_Node **P) {
     char condition;
-    printf("Add node to polynomial (y | n)?: ");
+    printf("Add node to polynomial (y | n): ");
     scanf("%c", &condition);
     fflush(stdin);
 
     while(condition == 'y' || condition == 'Y'){
         create_poly(P);
-        printf("Add node to polynomial (y | n)?: ");
+        printf("Add node to polynomial (y | n): ");
         scanf(" %c", &condition);
         fflush(stdin);
     }
 }
 
-/**
- * @brief creates a term of a polynomial by getting the
- * degree and coefficient and storing in a structure
- * @param P pointer to a pointer of type struct Poly_Node;
- * @return void
-**/ 
-void create_poly(struct Poly_Node **P){
-    struct Poly_Node *newNode, *cur, *prev;
-    create_node(&newNode);
+void add_to_poly(struct Poly_Node **P, struct Poly_Node *newNode) {
+    struct Poly_Node *cur, *prev;
 
-    printf("Enter coefficient: ");
-    scanf("%d", &newNode->coefficient);
-    printf("Enter degree: ");
-    scanf("%d", &newNode->degree);
-
-    while(newNode->degree < 0){
-        printf("Degree can not be less than 0, input a correct degree: ");
-        scanf("%d", &newNode->degree);
-    }
-    
     if (*P == NULL || newNode->degree > (*P)->degree) {
         newNode->next = *P;
         *P = newNode;
@@ -108,15 +95,37 @@ void create_poly(struct Poly_Node **P){
     }
 
     if (cur != NULL && newNode->degree == cur->degree) {
-        printf("%d %d\n", cur->degree, newNode->degree);
         cur->coefficient += newNode->coefficient;
         return;
     }
 
     newNode->next = cur->next;
     cur->next = newNode;
+}
 
-    free(newNode);
+/**
+ * @brief creates a term of a polynomial by getting the
+ * degree and coefficient and storing in a structure
+ * @param P pointer to a pointer of type struct Poly_Node;
+ * @return void
+**/ 
+void create_poly(struct Poly_Node **P){
+    struct Poly_Node *newNode, *cur, *prev;
+    create_node(&newNode);
+
+    printf("Enter coefficient: ");
+    scanf("%d", &newNode->coefficient);
+    printf("Enter degree: ");
+    scanf("%d", &newNode->degree);
+
+    while(newNode->degree < 0){
+        printf("Degree can not be less than 0, input a correct degree: ");
+        scanf("%d", &newNode->degree);
+    }
+
+    add_to_poly(P, newNode);
+
+    // free(newNode);
 }
 
 void display_poly(struct Poly_Node *P){
@@ -125,60 +134,94 @@ void display_poly(struct Poly_Node *P){
         return;
     }
 
+    printf("%dx^%d", P->coefficient, P->degree);
+    P = P->next;
     while (P != NULL) {
         printf(" + %dx^%d ", P->coefficient, P->degree);
         P = P->next;
     }
-
-
-  printf(" = 0\n");
+    printf(" = 0\n");
 }
 
 int degree_Poly(struct Poly_Node *P) {
     return P->degree;
 }
 
+void add_to_end(struct Poly_Node **tracker, struct Poly_Node *newNode)
+{
+    if (*tracker == NULL)
+        *tracker = newNode;
+    else
+    {
+        while ((*tracker)->next != NULL) *tracker = (*tracker)->next;
+        (*tracker)->next = newNode;
+        *tracker = newNode;
+    }
+    (*tracker)->next = NULL;
+    printf("%d %d\n", (*tracker)->coefficient, (*tracker)->degree);
+}
+
 void add_Poly(struct Poly_Node **R, struct Poly_Node *P, struct Poly_Node *Q){
-	
-	while(R->next && P->next){
-		if(R->degree > P->degree){
-			Q->degree = R->degree;
-			Q->coefficient = R->coefficient;
-			R = R->next;
+    struct Poly_Node *newNode, *tracker;
+    create_node(&newNode);
+
+	while(Q != NULL && P != NULL) {
+		if (Q->degree > P->degree){
+			newNode->degree = Q->degree;
+			newNode->coefficient = Q->coefficient;
+			Q = Q->next;
+            printf("1.%d %d\n", newNode->degree, newNode->coefficient);
 		}
-		
-		else if(P->degree > R->degree){
-			Q->degree = P->degree;
-			Q->coefficient = P->coefficient;
+
+		else if(P->degree > Q->degree){
+			newNode->degree = P->degree;
+			newNode->coefficient = P->coefficient;
 			P = P->next;
+            printf("2.%d %d\n", newNode->degree, newNode->coefficient);
 		}
 		
 		else{
-			Q->degree = R->degree;
-			Q->coefficient = R->coefficient + P->coefficient;
-			R = R->next;
+			newNode->degree = P->degree;
+			newNode->coefficient = P->coefficient + Q->coefficient;
+			Q = Q->next;
 			P = P->next;
+            printf("3.%d %d\n", newNode->degree, newNode->coefficient);
 		}
-		
-//		Q->next = (struct Poly_Node*) malloc(sizeof(struct Poly_Node));
-//		Q = Q->next;
-//		Q->next = NULL;
+        newNode->next = NULL;
 
-		create_node(&Q);
+		if (*R == NULL)
+        {
+            add_to_end(R, newNode);
+            tracker = *R;
+            continue;
+        }
+        add_to_end(&tracker, newNode);
+
+        printf("    %d %d\n", (*R)->degree, (*R)->coefficient);
 	}
 	
-	while(R->next || P->next){
-		if(R->next){
-			Q->degree = R->degree;
-			Q->coefficient = R->coefficient;
-			R = R->next;
+	while(Q != NULL || P != NULL){
+		if(Q->next){
+			newNode->degree = Q->degree;
+			newNode->coefficient = Q->coefficient;
+			Q = Q->next;
+            printf("%d %d\n", newNode->degree, newNode->coefficient);
 		}
 		if(P->next){
-			Q->degree = P->degree;
-			Q->coefficient = P->coefficient;
+			newNode->degree = P->degree;
+			newNode->coefficient = P->coefficient;
 			P = P->next;
+            printf("%d %d\n", newNode->degree, newNode->coefficient);
 		}
 		
-		create_node(&Q);
+		if (*R == NULL)
+        {
+            add_to_end(R, newNode);
+            tracker = *R;
+            continue;
+        }
+        add_to_end(&tracker, newNode);
+
+        printf("    %d %d\n", (*R)->degree, (*R)->coefficient);
 	}
 }
