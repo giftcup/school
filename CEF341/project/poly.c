@@ -26,25 +26,12 @@ int eval_poly(struct Poly_Node *P, int x);
 // main function
 int main(void)
 {
-  struct Poly_Node *P, *Q, *R;
-  P = Q = R = NULL;
-  char eval_polynomial;
-  int degree;
-
-int main(void){
     struct Poly_Node *P, *Q, *R;
     P = Q = R = NULL;
-    char make_polynomial;
-    int degree,value;
-    make_poly(&P);
+    char eval_polynomial, make_polynomial;
+    int degree, value;
 
-    printf("\n\nMake another polynomial (y | n): ");
-    scanf("%c", &make_polynomial);
-    fflush(stdin);
-    if (make_polynomial == 'y' || make_polynomial == 'Y')
-    {
-      make_poly(&Q);
-    }
+    make_poly(&P);
 
     printf("\n\nMake another polynomial (y | n): ");
     scanf("%c", &make_polynomial);
@@ -55,9 +42,6 @@ int main(void){
     display_poly(P);
     degree = degree_Poly(P);
     printf("The polynomial is of degree %d\n", degree);
-
-
-  
 
     if (Q != NULL) {
         display_poly(Q);
@@ -130,15 +114,6 @@ void make_poly(struct Poly_Node **P)
 }
 
 
-void add_to_poly(struct Poly_Node **P, struct Poly_Node *newNode) {
-    struct Poly_Node *cur, *prev;
-
-    if (*P == NULL || newNode->degree > (*P)->degree) {
-        newNode->next = *P;
-        *P = newNode;
-        return;
-    }
-=======
 /**
  * @brief: Adding a new node to the polynomial
  * @param P: polynomial in question.
