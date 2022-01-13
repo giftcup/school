@@ -44,7 +44,7 @@ void create_node(struct Poly_Node **P) {
 }
 
 void create_poly(struct Poly_Node **P){
-    struct Poly_Node *newNode, *temp;
+    struct Poly_Node *newNode, *cur, *prev;
     create_node(&newNode);
 
     printf("Enter coefficient: ");
@@ -56,28 +56,38 @@ void create_poly(struct Poly_Node **P){
         printf("Degree can not be less than 0, input a correct degree: ");
         scanf("%d", &newNode->degree);
     }
-
+    
     if (*P == NULL || newNode->degree > (*P)->degree) {
         newNode->next = *P;
         *P = newNode;
-        free(newNode);
         return;
     }
 
-    create_node(&temp);
-    temp = *P;
+    for(cur = *P, prev = NULL; 
+        cur != NULL && newNode->degree < cur->degree;
+        prev = cur, cur = cur->next) 
+    ;
 
-    for(; newNode->degree < temp->degree && temp->next != NULL; temp = temp->next);
-
-    if (newNode->degree == temp->degree) {
-        temp->coefficient += newNode->coefficient;
-        free(newNode);
-        free(temp);
+    if (cur == NULL) {
+        prev->next = newNode;
+        newNode->next = NULL;
         return;
     }
 
-    newNode->next = temp->next;
-    temp->next = newNode;
+    if (cur != NULL && newNode->degree > cur->degree) {
+        prev->next = newNode;
+        newNode->next = cur;
+        return;
+    }
+
+    if (cur != NULL && newNode->degree == cur->degree) {
+        printf("%d %d\n", cur->degree, newNode->degree);
+        cur->coefficient += newNode->coefficient;
+        return;
+    }
+
+    newNode->next = cur->next;
+    cur->next = newNode;
 
     free(newNode);
 }
@@ -88,7 +98,7 @@ void display_poly(struct Poly_Node *P){
         return;
     }
 
-    while (P->next != NULL) {
+    while (P != NULL) {
         printf(" + %dx^%d ", P->coefficient, P->degree);
         P = P->next;
     }
