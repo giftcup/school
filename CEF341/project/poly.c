@@ -140,6 +140,8 @@ int degree_Poly(struct Poly_Node *P) {
 
 void add_Poly(struct Poly_Node **R, struct Poly_Node *P, struct Poly_Node *Q){
 	
+	//First loop to add values of R and P while
+	//both exist 
 	while(R->next && P->next){
 		if(R->degree > P->degree){
 			Q->degree = R->degree;
@@ -163,10 +165,13 @@ void add_Poly(struct Poly_Node **R, struct Poly_Node *P, struct Poly_Node *Q){
 //		Q->next = (struct Poly_Node*) malloc(sizeof(struct Poly_Node));
 //		Q = Q->next;
 //		Q->next = NULL;
-
+		
+		//creates a new node to add next polynomial set
 		create_node(&Q);
 	}
 	
+	//Second loop to add values of R or P
+	//while R or P exist
 	while(R->next || P->next){
 		if(R->next){
 			Q->degree = R->degree;
@@ -179,6 +184,7 @@ void add_Poly(struct Poly_Node **R, struct Poly_Node *P, struct Poly_Node *Q){
 			P = P->next;
 		}
 		
+		//creates a new node to add next polynomial set
 		create_node(&Q);
 	}
 }
