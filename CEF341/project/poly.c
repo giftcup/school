@@ -16,8 +16,8 @@ void add_Poly(struct Poly_Node **R, struct Poly_Node *P, struct Poly_Node *Q);
 
 
 int main(void){
-  struct Poly_Node *poly1, *tracker;
-  poly1 = NULL;
+  struct Poly_Node *P, *tracker;
+  P = NULL;
   char condition;
   int degree;
 
@@ -25,16 +25,16 @@ int main(void){
     scanf("%c", &condition);
 
     while(condition == 'y' || condition == 'Y'){
-        create_poly(&poly1);
+        create_poly(&P);
         printf("Add node to polynomial (y | n)?: ");
         scanf(" %c", &condition);
     }
 
-    display_poly(poly1);
+    display_poly(P);
 //   degree = degree_Poly(poly1);
 //   printf("The polynomial is of degree %d\n", degree);
 
-    free(poly1);
+    free(P);
     return 0;
 }
 
