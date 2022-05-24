@@ -1,0 +1,16 @@
+#first-paragraph {
+    background-color: #ff8c42;
+    padding: 10px;
+}
+#second-paragraph {
+    background-color: #fcaf58;
+    padding: 10px;
+}
+#third-paragraph {
+    background-color: #f9c7a4;
+    padding: 10px;
+}
+img {
+    width: 33%;
+    height: 290px;
+}

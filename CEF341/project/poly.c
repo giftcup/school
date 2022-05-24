@@ -177,8 +177,8 @@ void create_poly(struct Poly_Node **P)
 
   while (newNode->degree < 0)
   {
-  printf("Degree can not be less than 0, input a correct degree: ");
-  scanf("%d", &newNode->degree);
+    printf("Degree can not be less than 0, input a correct degree: ");
+    scanf("%d", &newNode->degree);
   }
 
   add_to_poly(P, newNode);
