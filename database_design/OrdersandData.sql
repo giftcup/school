@@ -81,13 +81,66 @@ CREATE TABLE OrderDetails (
 
 -- inserts.sql --
 
-SELECT Customers.CustomerID, Orders.OrderID, Orders.OrderDate FROM (Customers INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID) WHERE DATE(Orders.OrderDate) BETWEEN '1992-01-01' AND '1992-12-31';
+--- QUESTIONS 1 ---
+SELECT Customers.CustomerID, Orders.OrderID, Orders.OrderDate FROM (Customers INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID) WHERE DATE(Orders.OrderDate) BETWEEN '2014-01-01' AND '2014-12-31';
 
+
+--- QUESTION 2 ---
 ALTER TABLE Customers ADD Active BOOLEAN DEFAULT true;
 
+--- QUESTION 3 ---
 SELECT Customers.CompanyName, Orders.OrderDate, Order.Freight + (OrderDetails.UnitPrice * OrderDetails.Quantity) AS Total_Amount
     FROM (Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID)
     INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
     WHERE Orders.OrderDate < '2012-09-01 00:00:00';
 
-SELECT Orders.OrderID, Shippers.CompanyName, Customers.CustomerID FROM (Shippers INNER JOIN Customers ON Customers.ShipVia = Shippers.ShipperID) INNER JOIN Orders ON Customers.CustomerID = Orders.OrderID WHERE Shippers.CompanyName = 'Federal Shipping';
+
+--- QUESTION 4 ---
+SELECT Orders.OrderID, Shippers.CompanyName, Customers.CustomerID FROM (Orders INNER JOIN Shippers ON Orders.ShipVia = Shippers.ShipperID) INNER JOIN Customers ON Customers.CustomerID = Orders.CustomerID WHERE Shippers.CompanyName = 'Federal Shipping';
+
+--- QUESTION 5 ---
+SELECT Customers.CustomerID, Customers.ContactName, Orders.OrderDate FROM (Orders INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID) WHERE Orders.OrderDate NOT BETWEEN '2011-01-01' AND '2011-12-31';
+
+--- QUESTION 6 ---
+SELECT Products.ProductID, Products.ProductName FROM Products WHERE UnitsOnOrder = 0;
+
+--- QUESTION 7 ---
+SELECT Customers.CustomerID, Customers.ContactName, Orders.OrderID FROM (Customers INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID) WHERE Customers.CustomerID IN (SELECT Customers.CustomerID FROM Customers
+WHERE Customers.City = 'London');
+
+--- QUESTION 8 ---
+SELECT Products.ProductName, Supplier.Name FROM (Products INNER JOIN Supplier ON Products.SupplierID = Supplier.SupplierID) WHERE Supplier.Name = 'Supplier A' OR Supplier.Name = 'Supplier B';
+
+--- QUESTION 9 ---
+SELECT Products.ProductName, Products.QuantityPerUnit FROM Products WHERE Products.QuantityPerUnit LIKE '%boxes%';
+
+--- PART 3 ---
+--- QUESTION 1 ---
+CREATE TABLE Employee (
+    EmployeeID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    LastName TEXT NULL,
+    FirstName TEXT NULL,
+    Address TEXT NULL,
+    City TEXT NULL,
+    Province TEXT NULL,
+    Postalcode TEXT NULL,
+    Phone TEXT NULL,
+    Salary REAL NULL
+);
+
+INSERT INTO Employee (LastName, FirstName, Address, City, Province, Postalcode, Phone, Salary) VALUES ('Salome', 'Tambe', 'Molyko', 'Buea', 'South West', 'P.O Box 67', '678201083', 10000000);
+
+INSERT INTO Employee (LastName, FirstName, Address, City, Province, Postalcode, Phone, Salary) VALUES ('Tabi', 'Edwin', 'Sandpit', 'Yaounde', 'South West', 'P.O Box 88', '678901083', 1000000);
+
+INSERT INTO Employee (LastName, FirstName, Address, City, Province, Postalcode, Phone, Salary) VALUES ('Acha', 'Sonia', 'Bakweri town', 'Limbe', 'North', 'P.O Box 77', '689721083', 20000000);
+
+INSERT INTO Employee (LastName, FirstName, Address, City, Province, Postalcode, Phone, Salary) VALUES ('Francis', 'Atem', 'Bomaka', 'Douala', 'West', 'P.O Box 697', '678201084', 1800000);
+
+INSERT INTO Employee (LastName, FirstName, Address, City, Province, Postalcode, Phone, Salary) VALUES ('Bessong', 'Tabi', 'Street two', 'Foumbot', 'Littoral', 'P.O Box 7', '678201084', 6800000);
+
+ALTER TABLE Orders ADD FOREIGN KEY (EmployeeID) REFERENCES Employee(EmployeeID);
+
+ALTER TABLE Orders ADD TotalSales INT NULL;
+
+UPDATE Orders
+SET TotalSales = (SELECT COUNT(OrderID) FROM OrderDetails WHERE Orders.OrderID = OrderDetails.OrderID);
