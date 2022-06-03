@@ -89,7 +89,7 @@ SELECT Customers.CustomerID, Orders.OrderID, Orders.OrderDate FROM (Customers IN
 ALTER TABLE Customers ADD Active BOOLEAN DEFAULT true;
 
 --- QUESTION 3 ---
-SELECT Customers.CompanyName, Orders.OrderDate, Order.Freight + (OrderDetails.UnitPrice * OrderDetails.Quantity) AS Total_Amount
+SELECT Customers.CompanyName, Orders.OrderDate, Orders.Freight + (OrderDetails.UnitPrice * OrderDetails.Quantity) AS Total_Amount
     FROM (Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID)
     INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
     WHERE Orders.OrderDate < '2012-09-01 00:00:00';
@@ -105,8 +105,7 @@ SELECT Customers.CustomerID, Customers.ContactName, Orders.OrderDate FROM (Order
 SELECT Products.ProductID, Products.ProductName FROM Products WHERE UnitsOnOrder = 0;
 
 --- QUESTION 7 ---
-SELECT Customers.CustomerID, Customers.ContactName, Orders.OrderID FROM (Customers INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID) WHERE Customers.CustomerID IN (SELECT Customers.CustomerID FROM Customers
-WHERE Customers.City = 'London');
+SELECT Customers.CustomerID, Customers.ContactName, Orders.OrderID FROM (Customers INNER JOIN Orders ON Orders.CustomerID = Customers.CustomerID) WHERE Customers.CustomerID IN (SELECT Customers.CustomerID FROM Customers WHERE Customers.City = 'London');
 
 --- QUESTION 8 ---
 SELECT Products.ProductName, Supplier.Name FROM (Products INNER JOIN Supplier ON Products.SupplierID = Supplier.SupplierID) WHERE Supplier.Name = 'Supplier A' OR Supplier.Name = 'Supplier B';
