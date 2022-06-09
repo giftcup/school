@@ -1,4 +1,4 @@
-CREATE DATABASE Orders;
+ CREATE DATABASE Orders;
 
 USE Orders;
 
@@ -16,6 +16,7 @@ CREATE TABLE Customers (
     Fax VARCHAR(24) NULL,
     PRIMARY KEY (CustomerID)
 );
+ALTER TABLE Customers ALTER Country SET DEFAULT 'Canada';
 
 CREATE TABLE Shippers (
     ShipperID INT NOT NULL,
@@ -52,6 +53,8 @@ CREATE TABLE Orders (
     PRIMARY KEY (OrderID)
 );
 
+ALTER TABLE Orders ADD CHECK(ShippedDate > OrderDate);
+
 CREATE TABLE Products (
     ProductID INT NOT NULL,
     SupplierID INT NULL,
@@ -78,6 +81,8 @@ CREATE TABLE OrderDetails (
     FOREIGN KEY (ProductID) REFERENCES Products(ProductID) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (OrderID, ProductID)
 );
+
+ALTER TABLE OrderDetails ADD CHECK(Quantity > 0);
 
 -- inserts.sql --
 
@@ -143,3 +148,5 @@ ALTER TABLE Orders ADD TotalSales INT NULL;
 
 UPDATE Orders
 SET TotalSales = (SELECT COUNT(OrderID) FROM OrderDetails WHERE Orders.OrderID = OrderDetails.OrderID);
+
+SELECT Shippers.CompanyName, COUNT(Orders.OrderID) AS NumOfOrders FROM (Orders INNER JOIN Shippers ON Orders.ShipVia = Shippers.ShipperID) GROUP BY Orders.ShipVia; 
